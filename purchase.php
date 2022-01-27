@@ -18,7 +18,7 @@
                     <div class="mb-1">
                     <h6 class="invoice-to-title">Invoice To:</h6>
               <div class="invoice-customer">
-                <select class="customer form-select" id="customerid" required name="customerid">
+                <select class="customer form-select" id="customerid" required name="supplierid">
                   <option value="0">Select Customer</option>
                   <option value="shelby">Shelby Company Limited</option>
                   <option value="hunters">Hunters Corp</option>
@@ -73,7 +73,7 @@
                         </table>
                     </div>
                     <div class="mb-1">
-                        <input type="hidden" name="action" value="saleItem">
+                        <input type="hidden" name="action" value="purchaseItem">
                         <input id="defaultInput" class="btn btn-success" type="submit" name="submit" value="Sale!">
                     </div>
                 </form>
@@ -117,14 +117,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
         <div class="modal-header mb-1">
           <h5 class="modal-title">
-            <span class="align-middle">Add New Customer</span>
+            <span class="align-middle">Add New Supplier</span>
           </h5>
         </div>
         <div class="modal-body flex-grow-1">
           <form action="includes/data_operation.php" method="POST" id="customerAdd">
             <div class="mb-1">
-              <label for="customer-name" class="form-label">Customer Name</label>
-              <input type="hidden" name="action" value="addCustomer"/>
+              <label for="customer-name" class="form-label">Supplier Name</label>
+              <input type="hidden" name="action" value="addSupplier"/>
               <input type="text" class="form-control" name="name" id="customer-name" placeholder="John Doe" />
             </div>
             <div class="mb-1">
@@ -229,7 +229,7 @@
     p = $(".customer");
     $('.customer')
     .select2().on("select2:open", (function() {
-        $(document).find(".add-new-customer").length || $(document).find(".select2-results__options").before('<div class="add-new-customer btn btn-flat-success cursor-pointer rounded-0 text-start mb-50 p-50 w-100" data-bs-toggle="modal" data-bs-target="#add-new-customer-sidebar"><span class="align-middle">Add New Customer</span></div>')
+        $(document).find(".add-new-customer").length || $(document).find(".select2-results__options").before('<div class="add-new-customer btn btn-flat-success cursor-pointer rounded-0 text-start mb-50 p-50 w-100" data-bs-toggle="modal" data-bs-target="#add-new-customer-sidebar"><span class="align-middle">Add New Supplier</span></div>')
     })),
     $(document).on("click", ".add-new-customer", (function() {
         p.select2("close")}));
@@ -239,7 +239,7 @@
   
   function loadCustomers()
   {
-      var action = "loadCustomers";
+      var action = "loadSupplier";
       $.ajax({
         url: "includes/data_operation.php",
         method: "POST",
@@ -418,8 +418,6 @@
 
     function addToCart(id,name,qty,price)
     {
-        if(qty != 0)
-        {
             $().closest("tr").remove();
             $("#item"+id).closest("tr").css({ 'display' : 'none'});
             var id = id;
@@ -440,19 +438,10 @@
             $("#cart").append(item);
             $("input[name='qty[]']").TouchSpin({
                 min: 1,
-                max: qty,
+                max: 100,
                 stepinterval: 1,
-                maxboostedstep: qty,
-            });
-            
-        }
-        else{
-            Swal.fire(
-                'Not Possible',
-                name + ' is low on quantity!',
-                'error'
-            )
-        }
+                maxboostedstep: 100,
+            });    
         calcTotal();
     }
     function delrow(id)
@@ -519,7 +508,7 @@
             {
                 Swal.fire(
                 'Not Possible',
-                'Select Customer First',
+                'Select Supplier First',
                 'error'
                 )
             }
@@ -534,11 +523,12 @@
                 processData: false,
                 success: function(data)
                 {
+                    console.log(data);
                     var id = parseInt(data);
                     alert(id);
                     Swal.fire({
                         title: 'Congratulations!',
-                        text: "Items have been sold! Do you want to generate bill?",
+                        text: "Items have been purchased! Do you want to generate bill?",
                         icon: 'success',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -546,7 +536,7 @@
                         confirmButtonText: 'Yes!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            var action = "generateBill";
+                            var action = "generateBillS";
                             $.ajax({
                                 url: "includes/data_operation.php",
                                 method: "POST",
@@ -559,6 +549,7 @@
                                 error: function (xhr, ajaxOptions, thrownError) {
                                     alert(xhr.status);
                                     alert(thrownError);
+
                                 }
                             });
                         }

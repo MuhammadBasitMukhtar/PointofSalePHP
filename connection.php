@@ -13,11 +13,16 @@ $db = 'point_of_sale' ;
 if($con){
 //echo"connection successfull";
   ?>
- 
+  <script>
+     // alert('connection successfull');
+   </script>
    <?php
 }else
 { echo "no connection";
      
 }
+
+
+
 
 ?>

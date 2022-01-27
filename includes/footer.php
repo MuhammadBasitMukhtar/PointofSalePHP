@@ -144,24 +144,50 @@
     <!-- END: Footer-->
 
 
-    <!-- BEGIN: Vendor JS-->
+    <!-- BEGIN: Vendor JS--> 
     <script src="vendors/js/vendors.min.js"></script>
     <!-- BEGIN Vendor JS-->
-
-    <!-- BEGIN: Page Vendor JS-->
-    <script src="vendors/js/charts/apexcharts.min.js"></script>
-    <script src="vendors/js/extensions/toastr.min.js"></script>
-    <!-- END: Page Vendor JS-->
-
     <!-- BEGIN: Theme JS-->
     <script src="js/core/app-menu.min.js"></script>
     <script src="js/core/app.min.js"></script>
     <script src="js/scripts/customizer.min.js"></script>
     <!-- END: Theme JS-->
-
-    <!-- BEGIN: Page JS-->
-    <script src="js/scripts/pages/dashboard-ecommerce.min.js"></script>
+    
     <!-- END: Page JS-->
+   <?php 
+   if($title == "POS" || $title == "Expenses" || $title == "History")
+   {
+     echo ' <!-- BEGIN: Page Vendor JS-->
+     <script src="vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+     <script src="vendors/js/extensions/sweetalert2.all.min.js"></script>
+     <script src="vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+     <script src="vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+     <script src="vendors/js/tables/datatable/responsive.bootstrap5.min.js"></script>
+     <script src="vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+     <script src="vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+     <script src="vendors/js/tables/datatable/jszip.min.js"></script>
+     <script src="vendors/js/tables/datatable/pdfmake.min.js"></script>
+     <script src="vendors/js/tables/datatable/vfs_fonts.js"></script>
+     <script src="vendors/js/tables/datatable/buttons.html5.min.js"></script>
+     <script src="vendors/js/tables/datatable/buttons.print.min.js"></script>
+     <script src="vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
+     <script src="vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
+     <script src="js/scripts/tables/table-datatables-basic.min.js"></script>
+     <script src="vendors/js/forms/spinner/jquery.bootstrap-touchspin.js"></script>
+     <script src="js/scripts/forms/form-number-input.min.js"></script>
+     <script src="vendors/js/pickers/pickadate/picker.js"></script>
+     <script src="vendors/js/pickers/pickadate/picker.date.js"></script>
+     <script src="vendors/js/pickers/pickadate/picker.time.js"></script>
+     <script src="vendors/js/pickers/pickadate/legacy.js"></script>
+     <script src="vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
+     <script src="js/scripts/forms/pickers/form-pickers.min.js"></script>
+    
+     <!-- END: Page Vendor JS-->
+ ';
+   }
+   
+   ?>
+
 
     <script>
       $(window).on('load',  function(){

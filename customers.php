@@ -1,52 +1,50 @@
-<?php include 'includes/connection.php'; ?>
-<?php include 'includes/header.php'; ?>
+<?php include "connection.php"; ?>
+ <?php include 'includes/header.php'; ?>
 <?php  
-
 if(!isset($_POST['editid']) && isset($_POST['name'])){
-  print_r($_POST);
-  
-    $name = $_POST['name'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];  
-
-    $insertquery ="INSERT INTO `suppliers` (`name`, `phone`, `address` ,`balance`)
-    VALUES ('$name', '$phone' ,'$address' ,0 )";
+    print_r($_POST);
     
-      $res = mysqli_query($con,$insertquery);
-      if($res) {
-        echo "<script>alert('data inserted properly');</script>";
-      }else {
-        echo "<script>alert('data not inserted properly');</script>";
-      }
-    }
-
-    if(isset($_POST['editid']) && isset($_POST['name'])){
-      $phone = $_POST['phone'];
-      $address = $_POST['address']; 
-      $id =$_POST['editid'];
       $name = $_POST['name'];
-      $insertquery ="UPDATE `suppliers` SET `name`='$name', `phone`='$phone', `address`='$address' where id=".$id;
-      $res = mysqli_query($con,$insertquery);
-      if($res) {
-        echo "<script>alert('data updated properly');</script>";
-      }else {
-        echo "<script>alert('data not updated properly');</script>";
+      $phone = $_POST['phone'];
+      $address = $_POST['address'];  
+
+      $insertquery ="INSERT INTO `customers` (`name`, `phone`, `address` ,`balance`)
+      VALUES ('$name', '$phone' ,'$address' ,0 )";
+      
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+          echo "<script>alert('data inserted properly');</script>";
+        }else {
+          echo "<script>alert('data not inserted properly');</script>";
+        }
       }
-    }
 
-    if(isset($_POST['delid'])){
-    $id=$_POST['delid'];
-    $query="DELETE FROM `customers` WHERE id=$id ";
-    $res = mysqli_query($con,$query);
-      if($res) {
-        echo "<script>alert('data  deleted properly');</script>";
-      }else {
-        echo "<script>alert('data not  deleted properly');</script>";
+      if(isset($_POST['editid']) && isset($_POST['name'])){
+           $phone = $_POST['phone'];
+           $address = $_POST['address']; 
+            $id =$_POST['editid'];
+      $name = $_POST['name'];
+            $insertquery ="UPDATE `customers` SET `name`='$name', `phone`='$phone', `address`='$address' where id=".$id;
+              $res = mysqli_query($con,$insertquery);
+              if($res) {
+                echo "<script>alert('data updated properly');</script>";
+              }else {
+                echo "<script>alert('data not updated properly');</script>";
+              }
+            }
+
+      if(isset($_POST['delid'])){
+      $id=$_POST['delid'];
+      $query="DELETE FROM `customers` WHERE id=$id ";
+      $res = mysqli_query($con,$query);
+        if($res) {
+          echo "<script>alert('data  deleted properly');</script>";
+        }else {
+          echo "<script>alert('data not  deleted properly');</script>";
+        }
       }
-    }
-
-
-?>
+   
+ ?>
 
 
 
@@ -56,7 +54,7 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
     <div class="col-md-3 col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Add Supplier</h4>
+          <h4 class="card-title">Add Customer</h4>
         </div>
         <div class="card-body">
           <div class="row">
@@ -91,7 +89,7 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
     <div class="col-md-9 col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">List of Suppliers</h4>
+          <h4 class="card-title">List of Customers</h4>
         </div>
         <div class="card-body">
           <div class="row">
@@ -109,7 +107,7 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
                     </thead>
                     <tbody>
                     <?php 
-                       $selectquery= "SELECT `id`, `name`, `phone`, `address` , `balance` FROM `suppliers` WHERE 1";
+                       $selectquery= "SELECT `id`, `name`, `phone`, `address` , `balance` FROM `customers` WHERE 1";
                        $query = mysqli_query($con,$selectquery);
                        $num = mysqli_num_rows($query);
 
@@ -140,7 +138,7 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
                                                                            
   </div>
 </section>
-<script src="vendors\js\extensions\sweetalert2.all.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script> 
       function editprod(id){
