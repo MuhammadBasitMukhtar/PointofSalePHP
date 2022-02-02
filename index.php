@@ -1,5 +1,6 @@
 <?php $title = "Dashboard"; ?>
-<?php include 'includes/header.php' ?>4
+<?php include 'includes/connection.php' ?>
+<?php include 'includes/header.php' ?>
 <style type="text/css">.apexcharts-canvas {
   position: relative;
   user-select: none;

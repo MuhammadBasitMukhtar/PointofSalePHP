@@ -17,11 +17,11 @@ if(isset($_GET['id']))
         $res[] = $i['datecreated'];
         
         $res[] = $i['subtotal'];
-        $res[] = $i['total'] - $i['subtotal'];
+        $res[] = $i['total'] - $i['subtotal'] + $i['discount'];
         $res[] = $i['discount'];
         $res[] = $i['total'];
         $res[] = $i['received'];
-        $res[] = $i['received'] - $['total'];
+        $res[] = $i['received'] - $i['total'];
     }   
     $query = "SELECT * from sales where invoiceid = ".$id;
     $a = mysqli_query($con,$query);
@@ -34,11 +34,11 @@ if(isset($_GET['id']))
         $r = mysqli_query($con,$b);
         while($z = mysqli_fetch_array($r))
         {
-            $item[]  = $i['name'];
+            $item[]  = $z['name'];
         }
         $item[] = $i['price'];
         $item[] = $i['qty'];
-        $item[] = $i['total']
+        $item[] = $i['total'];
         $count++;
         $items[] = $item;
     }
@@ -158,11 +158,13 @@ if(isset($_GET['id']))
                 <tbody>
                     <?php 
                         for ($i=0; $i < count($items); $i++) { 
+                            echo '<tr>';
                             echo '<td>'.$items[$i][0].'</td>';
                             echo '<td>'.$items[$i][1].'</td>';
                             echo '<td>'.$items[$i][2].'</td>';
                             echo '<td>'.$items[$i][3].'</td>';
                             echo '<td>'.$items[$i][4].'</td>';
+                            echo '</tr>';
                         }
                     ?>
                 </tbody>

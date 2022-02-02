@@ -1,7 +1,7 @@
 <?php include 'connection.php'?>
-<?php $title = "POS";?>
-
+<?php $title = "Stock Update";?>
 <?php include('includes/header.php')?>
+
 <section id="input-sizing">
   <div class="row match-height">
     <div class="col-md-7 col-12">
@@ -17,7 +17,7 @@
                     <div class="mb-1">
                     <h6 class="invoice-to-title">Invoice To:</h6>
               <div class="invoice-customer">
-                <select class="customer form-select" id="customerid" required name="customerid">
+                <select class="customer form-select" id="customerid" required name="supplierid">
                   <option value="0">Select Customer</option>
                   <option value="shelby">Shelby Company Limited</option>
                   <option value="hunters">Hunters Corp</option>
@@ -72,7 +72,7 @@
                         </table>
                     </div>
                     <div class="mb-1">
-                        <input type="hidden" name="action" value="saleItem">
+                        <input type="hidden" name="action" value="purchaseItem">
                         <input id="defaultInput" class="btn btn-success" type="submit" name="submit" value="Sale!">
                     </div>
                 </form>
@@ -116,14 +116,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
         <div class="modal-header mb-1">
           <h5 class="modal-title">
-            <span class="align-middle">Add New Customer</span>
+            <span class="align-middle">Add New Supplier</span>
           </h5>
         </div>
         <div class="modal-body flex-grow-1">
           <form action="includes/data_operation.php" method="POST" id="customerAdd">
             <div class="mb-1">
-              <label for="customer-name" class="form-label">Customer Name</label>
-              <input type="hidden" name="action" value="addCustomer"/>
+              <label for="customer-name" class="form-label">Supplier Name</label>
+              <input type="hidden" name="action" value="addSupplier"/>
               <input type="text" class="form-control" name="name" id="customer-name" placeholder="John Doe" />
             </div>
             <div class="mb-1">

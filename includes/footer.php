@@ -144,18 +144,16 @@
     <!-- END: Footer-->
 
 
-    <!-- BEGIN: Vendor JS--> 
-    <script src="vendors/js/vendors.min.js"></script>
-    <!-- BEGIN Vendor JS-->
     <!-- BEGIN: Theme JS-->
     <script src="js/core/app-menu.min.js"></script>
     <script src="js/core/app.min.js"></script>
     <script src="js/scripts/customizer.min.js"></script>
+    <script src="vendors/js/extensions/toastr.min.js"></script>
     <!-- END: Theme JS-->
     
     <!-- END: Page JS-->
    <?php 
-   if($title == "POS" || $title == "Expenses" || $title == "History")
+   if($title == "POS" || $title == "Expenses" || $title == "History" || $title == "Stock Update" || $title == "Sales History" || $title == "Product Details")
    {
      echo ' <!-- BEGIN: Page Vendor JS-->
      <script src="vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
@@ -184,16 +182,89 @@
     
      <!-- END: Page Vendor JS-->
  ';
+    if($title == "Expenses")
+    {
+      echo '<script src="js/expenses.js"></script>';
+    }
+    else if ($title == "POS")
+    {
+      
+      echo '<script src="vendors/js/forms/repeater/jquery.repeater.min.js"></script>
+      <script src="vendors/js/forms/select/select2.full.min.js"></script>
+      <script src="js/pos.js"></script>';
+    }
+    else if($title == "Stock Update")
+    {
+      echo '<script src="vendors/js/forms/repeater/jquery.repeater.min.js"></script>
+      <script src="vendors/js/forms/select/select2.full.min.js"></script>
+      <script src="js/updatestock.js"></script>';
+    }
+    else if($title == "History")
+    {
+      echo '<script src="vendors/js/forms/repeater/jquery.repeater.min.js"></script>
+      <script src="vendors/js/forms/select/select2.full.min.js"></script>
+      <script src="js/transactions.js"></script>';
+    }
+    else if($title == "Sales History")
+    {
+      echo '<script src="vendors/js/forms/repeater/jquery.repeater.min.js"></script>
+      <script src="vendors/js/forms/select/select2.full.min.js"></script>
+      <script src="js/sales.js"></script>';
+    }
+    else
+     {
+      echo '<script src="vendors/js/forms/select/select2.full.min.js"></script>
+      <script src="js/viewproduct.js"></script>';
+     }
+   }
+   else if($title == "Customers" || $title == "Suppliers" || $title == "Products")
+   {
+     echo '<!-- BEGIN: Page Vendor JS-->
+     <script src="vendors/js/extensions/sweetalert2.all.min.js"></script>
+     <script src="vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+     <script src="vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+     <script src="vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+     <script src="vendors/js/tables/datatable/responsive.bootstrap5.min.js"></script>
+     <script src="vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+     <script src="vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+     <script src="vendors/js/tables/datatable/jszip.min.js"></script>
+     <script src="vendors/js/tables/datatable/pdfmake.min.js"></script>
+     <script src="vendors/js/tables/datatable/vfs_fonts.js"></script>
+     <script src="vendors/js/tables/datatable/buttons.html5.min.js"></script>
+     <script src="vendors/js/tables/datatable/buttons.print.min.js"></script>
+     <script src="vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
+     <!-- END: Page Vendor JS-->';
+     
+     if($title == "Customers")
+     {
+       echo '<script src="js/customer.js"></script>';
+     }
+     else if($title == "Products")
+     {
+       echo '<script src="js/products.js"></script>';
+     }
+     else if($title == "Suppliers")
+     {
+      echo '<script src="js/supplier.js"></script>';
+     }
+     
+   }
+   else
+   {
+    echo '<script src="js/settings.js"></script>';
    }
    
    ?>
 
 
     <script>
+      
       $(window).on('load',  function(){
+        var intervalId = window.setInterval(function(){
         if (feather) {
           feather.replace({ width: 14, height: 14 });
         }
+      }, 500);
       })
     </script>
   

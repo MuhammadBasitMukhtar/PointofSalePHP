@@ -1,5 +1,6 @@
 <?php
 include 'connection.php';
+session_start();
 if(isset($_GET['action']))
 {
     if($_GET['action'] == "loadProduct")
@@ -13,9 +14,53 @@ if(isset($_GET['action']))
         }        
         print(json_encode($rows));
     }
+    if($_GET['action'] == "listCustomer")
+    {
+        $query = "SELECT * FROM customers where isDeleted = 0";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        print(json_encode($rows));
+    }
+    if($_GET['action'] == "listSupplier")
+    {
+        $query = "SELECT * FROM suppliers where isDeleted = 0";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        print(json_encode($rows));
+    }
+    if($_GET['action'] == "listProduct")
+    {
+        $query = "SELECT * FROM products where isDeleted = 0";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        print(json_encode($rows));
+    }
+    if($_GET['action'] == "listExpense")
+    {
+        $query = "SELECT * FROM expenses where isDeleted = 0";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        print(json_encode($rows));
+    }
     if($_GET['action'] == "loadTransaction")
     {
-        $query = "SELECT * FROM transactions order by datecreated desc";
+        $query = "SELECT * FROM transactions where isDeleted = 0 order by datecreated desc";
         $res = mysqli_query($con,$query);
         $rows = array();
         while($r = mysqli_fetch_array($res))
@@ -28,11 +73,267 @@ if(isset($_GET['action']))
 
 if(isset($_POST['action']))
 {
+    if($_POST['action'] == "loadProductSales")
+    {
+        $from = $_POST['from'];
+        $to = $_POST['to'];
+        $id = $_POST['id']; 
+        $customerid = $_POST['customerid'];
+        $supplierid = $_POST['supplierid'];
+        $type = $_POST['type'];
+        $query = "";
+        if($customerid == 0)
+        {
+            if($supplierid == 0)
+            {
+                if($type == 0)
+                {
+                    $query = "select id, invoiceid,(SELECT cost from products where id = productid) as cost, (SELECT name from customers where id = (select customerid from invoice where id=invoiceid)) as customername,(SELECT name from suppliers where id = (select supplierid from invoice where id=invoiceid)) as suppliername, productid, (select name from products where id = productid) as productname, qty, price, total,(select datecreated from invoice where id = invoiceid) as datesold, type from sales where productid = $id and (select datecreated from invoice where id = invoiceid) between '$from' and '$to' order by datesold desc";
+                    
+                }
+                else
+                {
+                    $query = "select id, invoiceid,(SELECT cost from products where id = productid) as cost, (SELECT name from customers where id = (select customerid from invoice where id=invoiceid)) as customername,(SELECT name from suppliers where id = (select supplierid from invoice where id=invoiceid)) as suppliername, productid, (select name from products where id = productid) as productname, qty, price, total,(select datecreated from invoice where id = invoiceid) as datesold, type from sales where productid = $id and type = '$type' and (select datecreated from invoice where id = invoiceid) between '$from' and '$to' order by datesold desc";
+                }
+            }
+            else
+            {
+                $query = "select id, invoiceid,(SELECT cost from products where id = productid) as cost, (SELECT name from customers where id = (select customerid from invoice where id=invoiceid)) as customername,(SELECT name from suppliers where id = (select supplierid from invoice where id=invoiceid)) as suppliername, productid, (select name from products where id = productid) as productname, qty, price, total,(select datecreated from invoice where id = invoiceid) as datesold, type from sales where productid = $id and (select supplierid from invoice where id = invoiceid) = $supplierid and (select datecreated from invoice where id = invoiceid) between '$from' and '$to' order by datesold desc";
+            }
+        }
+        else
+        {
+            $query = "select id, invoiceid,(SELECT cost from products where id = productid) as cost, (SELECT name from customers where id = (select customerid from invoice where id=invoiceid)) as customername,(SELECT name from suppliers where id = (select supplierid from invoice where id=invoiceid)) as suppliername, productid, (select name from products where id = productid) as productname, qty, price, total,(select datecreated from invoice where id = invoiceid) as datesold, type from sales where productid = $id and (select customerid from invoice where id = invoiceid) = $customerid and (select datecreated from invoice where id = invoiceid) between '$from' and '$to' order by datesold desc";
+        }
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        echo json_encode($rows);
+    }
+    if($_POST['action'] == "loadProductStats")
+    {
+        $id = $_POST['id']; 
+        $query = "SELECT productid,(select name from products where id = productid) as name,(select cost from products where id = productid) as cost,(select price from products where id = productid) as price,(select qty from products where id = productid) as qty, SUM(qty) as sold_qty, (SUM(qty) * price) as sale ,((SUM(qty) * price) - ((select cost from products where id = productid) * SUM(qty))) as earning FROM sales where type = 'S' and productid = $id GROUP BY productid";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        echo json_encode($rows);
+    }
+    if($_POST['action'] == "loadProfile")
+    {
+        $query = "SELECT * from users where id = 1";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        echo json_encode($rows);
+    }
+    if($_POST['action'] == "loadShop")
+    {
+        $query = "SELECT * from profile where id = 1";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        echo json_encode($rows);
+    }
+    if($_POST['action'] == "checkPass")
+    {
+        $pass = $_POST['oldPassword'];
+        $query = "SELECT password from users where id = 1";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        $message = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows['pass'] = $r;
+        }        
+        if($rows['pass'][0] == $pass)
+        {
+            $message['success'] = 1;
+        }
+        else
+        {
+            $message['error'] = 1;
+            $message['rows'] = $rows['pass'][0];
+        }
+        echo json_encode($message);
+    }
+    if($_POST['action'] == "updateProfile")
+    {
+        $name = $_POST['name'];
+        $username = $_POST['username'];
+        $newPass = $_POST['newPassword'];
+        $check = $_POST['updatePass'];
+        $query = "UPDATE users set name = '$name', username = '$username' where id = 1";
+        if($check == 1)
+        {
+            $query = "UPDATE users set name = '$name', username = '$username', password = '$newPass' where id = 1";
+        }
+        $res = mysqli_query($con,$query);
+        $_SESSION['name']=$name;
+        $rows = array();
+        $rows['success'] = 1;
+        echo json_encode($rows);
+    }
+    if($_POST['action'] == "updateShop")
+    {
+        $name = $_POST['shopname'];
+        $slogan = $_POST['slogan'];
+        $address = $_POST['address'];
+        $contact = $_POST['contact'];
+        $message = $_POST['message'];
+        $messagepurchase = $_POST['messagepurchase'];
+        $query = "UPDATE profile set name = '$name', slogan = '$slogan', address = '$address', contact = '$contact', message = '$message', messagepurchase = '$messagepurchase' where id = 1";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        $rows['success'] = 1;
+        echo json_encode($rows);
+    }
+    if($_POST['action'] == "authSign")
+    {
+        $uname=$_POST['username'];
+        $password=$_POST['password'];
+    
+        $sql="select * from users where username='".$uname."'AND password='".$password."' limit 1";
+    
+        $result=mysqli_query($con,$sql);
+        $arr = mysqli_fetch_assoc($result);
+        if(mysqli_num_rows($result)==1){
+            print_r($arr['name']);
+            $_SESSION['name'] = $arr['name'];
+            header("location: ../index.php");
+        }
+        else{
+            echo " You Have Entered Incorrect Password";
+            exit();
+        }
+    }
+
     if($_POST['action'] == "loadTransaction")
     {
         $from = $_POST['from'];
         $to = $_POST['to']; 
-        $query = "SELECT * FROM transactions where datecreated between '$from' and '$to' order by datecreated desc";
+        $query = "SELECT * FROM transactions where datecreated between '$from' and '$to' and isDeleted = 0 order by datecreated desc";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        echo json_encode($rows);
+    }
+    if($_POST['action'] == "prevPay")
+    {
+        $id = $_POST['id'];
+        $type=$_POST['type'];
+        $cid = $_POST['cid'];
+        $amount = $_POST['amount'];
+        $received = $_POST['received'];
+        if($received >= $amount)
+        {
+            $query = "INSERT INTO `transactions`(`amount`, `invoiceid`, `description`, `isdebit`) 
+            VALUES ($amount,$id,'Previous Amount Paid',0)";
+            $ans = mysqli_query($con,$query);
+            $query = "UPDATE invoice set received = $amount, status = 1 where id = $id";
+            $ans = mysqli_query($con,$query);
+            if($type == 'S')
+            {
+                $query = "UPDATE customers set balance = 0 where id = $cid";
+                $ans = mysqli_query($con,$query);
+            }
+            else
+            {
+                $query = "UPDATE suppliers set balance = 0 where id = $cid";
+                $ans = mysqli_query($con,$query);
+            }
+        }
+        else
+        {
+            $query = "INSERT INTO `transactions`(`amount`, `invoiceid`, `description`, `isdebit`) 
+            VALUES ($received,$id,'Previous Amount Paid',0)";
+            $ans = mysqli_query($con,$query);
+            $query = "UPDATE invoice set received = received + $received where id = $id";
+            $ans = mysqli_query($con,$query);
+            if($type == "S")
+            {
+                $query = "UPDATE customers set balance = balance - $received where id = $cid";
+                $ans = mysqli_query($con,$query);
+            }
+            else
+            {
+                $query = "UPDATE suppliers set balance = balance - $received where id = $cid";
+                $ans = mysqli_query($con,$query);
+            }
+        }
+
+        
+        echo json_encode("Successfull");
+    }
+
+    if($_POST['action'] == "loadInvoiceID")
+    {
+        $id = $_POST['id'];
+        $rows = array();
+        $items = array();
+        $query = "SELECT id,supplierid,customerid,(select name from customers where id = customerid) as customername,(select name from suppliers where id = supplierid) as suppliername, subtotal, (IF(`status` = 1, 'Paid', 'Due')) As status, discount,total,received,datecreated, type FROM invoice where id = $id";
+        $res = mysqli_query($con,$query);
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }
+        $query = "SELECT id, (select name from products where id = productid) AS name, qty, price, total FROM `sales` where invoiceid = $id";
+        $res = mysqli_query($con,$query);
+        while($r = mysqli_fetch_array($res))
+        {   
+            $item = array();
+            $item[] = $r;
+            $items[] = $item;
+        }        
+        $rows[0]['items'] = $items;
+        echo json_encode($rows);
+    }
+    if($_POST['action'] == "loadInvoice")
+    {
+        $query = "";
+        $type = $_POST['type'];
+        $customerid = $_POST['customerid'];
+        $supplierid = $_POST['supplierid'];
+        $from = $_POST['from'];
+        $to = $_POST['to']; 
+        if($customerid == 0)
+        {
+            if($supplierid == 0)
+            {
+                if($type == 0)
+                {
+                    $query = "SELECT id, (select name from suppliers where id = supplierid) as suppliername,(select name from customers where id = customerid) as customername, subtotal, discount , total, received, datecreated, (IF(`status` = 1, 'Paid', 'Due')) As status, type FROM invoice where datecreated between '$from' and '$to' order by datecreated desc";
+                }
+                else
+                {
+                    $query = "SELECT id, (select name from suppliers where id = supplierid) as suppliername,(select name from customers where id = customerid) as customername, subtotal, discount , total, received, datecreated, (IF(`status` = 1, 'Paid', 'Due')) As status, type FROM invoice where type = '$type' and datecreated between '$from' and '$to' order by datecreated desc";
+                }
+            }
+            else
+            {
+                $query = "SELECT id, (select name from suppliers where id = supplierid) as suppliername, subtotal, discount , total, received, datecreated, (IF(`status` = 1, 'Paid', 'Due')) As status, type FROM invoice where datecreated between '$from' and '$to' and supplierid = $supplierid order by datecreated desc";
+            }
+        }
+        else
+        {
+            $query = "SELECT id, (select name from customers where id = customerid) as customername, subtotal, discount , total, received, datecreated, (IF(`status` = 1, 'Paid', 'Due')) As status, type FROM invoice where datecreated between '$from' and '$to' and customerid = $customerid  order by datecreated desc";
+        }
+        
         $res = mysqli_query($con,$query);
         $rows = array();
         while($r = mysqli_fetch_array($res))
@@ -63,6 +364,7 @@ if(isset($_POST['action']))
         }
         echo json_encode($output);
     }
+    
     if($_POST['action'] == "addCustomer")
     {
         $name = $_POST['name'];
@@ -77,6 +379,31 @@ if(isset($_POST['action']))
           echo "data inserted properly";
         }else {
           echo "data not inserted properly";
+        }
+    }
+    if($_POST['action'] == "editCustomer")
+    {
+        $phone = $_POST['phone'];
+        $address = $_POST['address']; 
+        $id =$_POST['editid'];
+        $name = $_POST['name'];
+        $insertquery ="UPDATE `customers` SET `name`='$name', `phone`='$phone', `address`='$address' where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+    }
+    if($_POST['action'] == "delCustomer")
+    {
+        $id =$_POST['delid'];
+        $insertquery ="UPDATE `customers` SET `isDeleted`=1 where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
         }
     }
     if($_POST['action'] == "addSupplier")
@@ -95,6 +422,31 @@ if(isset($_POST['action']))
           echo "data not inserted properly";
         }
     }
+    if($_POST['action'] == "editSupplier")
+    {
+        $phone = $_POST['phone'];
+        $address = $_POST['address']; 
+        $id =$_POST['editid'];
+        $name = $_POST['name'];
+        $insertquery ="UPDATE `suppliers` SET `name`='$name', `phone`='$phone', `address`='$address' where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+    }
+    if($_POST['action'] == "delSupplier")
+    {
+        $id =$_POST['delid'];
+        $insertquery ="UPDATE `suppliers` SET `isDeleted`=1 where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+    }
     if($_POST['action'] == "addProduct")
     {
         $name = $_POST['name'];
@@ -109,6 +461,99 @@ if(isset($_POST['action']))
           echo "data inserted properly";
         }else {
           echo "data not inserted properly";
+        }
+    }
+    if($_POST['action'] == "editProduct")
+    {
+        $cost = $_POST['cost'];
+        $price = $_POST['price']; 
+        $id =$_POST['editid'];
+        $name = $_POST['name'];
+        $insertquery ="UPDATE `products` SET `name`='$name', `cost`='$cost', `price`='$price' where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+    }
+    if($_POST['action'] == "delProduct")
+    {
+        $id =$_POST['delid'];
+        $insertquery ="UPDATE `products` SET `isDeleted`=1 where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+    }
+    if($_POST['action'] == "addExpense")
+    {
+        $details = $_POST['details'];
+        $amount = $_POST['amount'];
+        
+        $insertquery ="INSERT INTO `expenses` (`details`, `amount`,`isDeleted`)
+        VALUES ('$details', $amount ,0 )";
+        
+          $res = mysqli_query($con,$insertquery);
+          if($res) {
+            $id = mysqli_insert_id($con);
+            $query = "INSERT INTO `transactions`(`amount`, `expenseid`, `description`, `isdebit`) 
+            VALUES ($amount,$id,'Expense Debited',1)";
+            $ans = mysqli_query($con,$query);
+            echo "<script>alert('data inserted properly');</script>";
+          }else {
+            echo "<script>alert('data not inserted properly');</script>";
+          }
+    }
+    if($_POST['action'] == "editExpense")
+    {
+        $amount = $_POST['amount'];
+        $details = $_POST['details']; 
+        $id =$_POST['editid'];
+        $insertquery ="UPDATE `expenses` SET `details`='$details', `amount`='$amount' where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+        $insertquery ="UPDATE `transactions` SET `amount`='$amount' where expenseid=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+    }
+    if($_POST['action'] == "delExpense")
+    {
+        $id =$_POST['delid'];
+        $insertquery ="UPDATE `expenses` SET `isDeleted`=1 where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+        $insertquery ="UPDATE `transactions` SET `isDeleted`=1 where expenseid=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
+        }
+    }
+    if($_POST['action'] == "updateProductStatus")
+    {
+        $id =$_POST['id'];
+        $insertquery ="UPDATE `products` SET `isActive`= IF(`isActive` = 1, 0, 1) where id=".$id;
+        $res = mysqli_query($con,$insertquery);
+        if($res) {
+            echo "<script>alert('data updated properly');</script>";
+        }else {
+            echo "<script>alert('data not updated properly');</script>";
         }
     }
     if($_POST['action'] == "saleItem")
@@ -459,11 +904,13 @@ if(isset($_POST['action']))
                     <tbody>
                         '; 
                             for ($i=0; $i < count($items); $i++) { 
+                                $output .= '<tr>';
                                 $output .= '<td>'.$items[$i][0].'</td>';
                                 $output .= '<td>'.$items[$i][1].'</td>';
                                 $output .= '<td>'.$items[$i][2].'</td>';
                                 $output .= '<td>'.$items[$i][3].'</td>';
                                 $output .= '<td>'.$items[$i][4].'</td>';
+                                $output .= '</tr>';
                             }
                         $output .='
                     </tbody>
@@ -671,11 +1118,13 @@ if(isset($_POST['action']))
                     <tbody>
                         '; 
                             for ($i=0; $i < count($items); $i++) { 
+                                $output .= '<tr>';
                                 $output .= '<td>'.$items[$i][0].'</td>';
                                 $output .= '<td>'.$items[$i][1].'</td>';
                                 $output .= '<td>'.$items[$i][2].'</td>';
                                 $output .= '<td>'.$items[$i][3].'</td>';
                                 $output .= '<td>'.$items[$i][4].'</td>';
+                                $output .= '</tr>';
                             }
                         $output .='
                     </tbody>

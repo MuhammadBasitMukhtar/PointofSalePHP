@@ -1,59 +1,10 @@
-<?php include 'includes/connection.php'; ?>
-<?php include 'includes/header.php'; ?>
-<?php  
-
-if(!isset($_POST['editid']) && isset($_POST['name'])){
-  print_r($_POST);
-  
-    $name = $_POST['name'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];  
-
-    $insertquery ="INSERT INTO `suppliers` (`name`, `phone`, `address` ,`balance`)
-    VALUES ('$name', '$phone' ,'$address' ,0 )";
-    
-      $res = mysqli_query($con,$insertquery);
-      if($res) {
-        echo "<script>alert('data inserted properly');</script>";
-      }else {
-        echo "<script>alert('data not inserted properly');</script>";
-      }
-    }
-
-    if(isset($_POST['editid']) && isset($_POST['name'])){
-      $phone = $_POST['phone'];
-      $address = $_POST['address']; 
-      $id =$_POST['editid'];
-      $name = $_POST['name'];
-      $insertquery ="UPDATE `suppliers` SET `name`='$name', `phone`='$phone', `address`='$address' where id=".$id;
-      $res = mysqli_query($con,$insertquery);
-      if($res) {
-        echo "<script>alert('data updated properly');</script>";
-      }else {
-        echo "<script>alert('data not updated properly');</script>";
-      }
-    }
-
-    if(isset($_POST['delid'])){
-    $id=$_POST['delid'];
-    $query="DELETE FROM `customers` WHERE id=$id ";
-    $res = mysqli_query($con,$query);
-      if($res) {
-        echo "<script>alert('data  deleted properly');</script>";
-      }else {
-        echo "<script>alert('data not  deleted properly');</script>";
-      }
-    }
-
-
+<?php include "connection.php"; 
+$title = "Suppliers";
 ?>
-
-
-
-
+ <?php include 'includes/header.php'; ?>
 <section id="input-sizing">
   <div class="row match-height">
-    <div class="col-md-3 col-12">
+    <div class="col-md-3 col-sm-12 col-12">
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">Add Supplier</h4>
@@ -63,9 +14,10 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
             <div class="col-12">
               <form action="" method="POST" id="delform">
                 <input type="hidden" name="delid" value="" id="delid">
+                <input type="hidden" name="action" value="delSupplier" />
               </form>
-                <form action="" method="POST" id="prodform"> 
-               
+                <form action="" method="POST" id="supplierAdd"> 
+                    <input type="hidden" value="addSupplier" name="action" id="action" />
                     <div class="mb-1">
                         <label class="form-label" for="defaultInput">Name</label>
                         <input id="defaultInput" class="form-control" type="text"  name="name" placeholder="Name" required>
@@ -79,7 +31,7 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
                         <input id="defaultInput" class="form-control" type="text"  name="address" placeholder="address" required>
                     </div>      
                     <div class="mb-1">
-                        <input id="defaultInput" class="btn btn-success" type="submit" name="submit" value="Add New Customer">
+                        <input id="defaultInput" class="btn btn-success btn-responsive" type="submit" name="submit" value="Add Supplier">
                     </div>
                 </form>
               
@@ -88,15 +40,12 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
         </div>
       </div>
     </div>
-    <div class="col-md-9 col-12">
+    <div class="col-md-9 col-sm-12 col-12">
       <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">List of Suppliers</h4>
-        </div>
         <div class="card-body">
           <div class="row">
             <div class="col-12 table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="listSuppliers">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -104,32 +53,11 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
                         <th>Phone</th>
                         <th>Address</th>
                         <th>Balance</th> 
-                        <th colspan="2">Action</th>
+                        <th colspan="1"><center>Action</center></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php 
-                       $selectquery= "SELECT `id`, `name`, `phone`, `address` , `balance` FROM `suppliers` WHERE 1";
-                       $query = mysqli_query($con,$selectquery);
-                       $num = mysqli_num_rows($query);
-
-                       while($res = mysqli_fetch_array($query)){
-                          ?>
-                           <tr>
-                           <td> <?php echo $res['id']; ?></td>
-                           <td id="name<?php echo $res['id']; ?>" ><?php echo $res['name']; ?></td>
-                           <td id="phone<?php echo $res['id']; ?>" > <?php echo $res['phone']; ?></td>
-                           <td id="address<?php echo $res['id']; ?>" > <?php echo $res['address']; ?></td>
-                           <td> <?php echo $res['balance']; ?></td> 
-                          <td> <a href="#" data-toggle="tooltip" onclick="editprod(<?php echo $res['id']; ?>)" data-placement="top" title="Update!">
-                             <i data-feather="edit" aria-hidden="true"></i> </a> </td>
-                           <td><a href="#" data-toggle="tooltip" onclick="delprod(<?php echo $res['id']; ?>) " data-placement="top" title="Delete!">
-                             <i data-feather="trash-2" aria-hidden="true"></i> </a></td> 
-                          </tr>
-
-                        <?php
-                       } 
-                       ?>     
+                         
                   </tbody>
                 </table>              
             </div>
@@ -140,42 +68,4 @@ if(!isset($_POST['editid']) && isset($_POST['name'])){
                                                                            
   </div>
 </section>
-<script src="vendors\js\extensions\sweetalert2.all.min.js"></script>
-
-<script> 
-      function editprod(id){
-        nameid = "#name"+id;
-        var name =$('#name' + id).html();
-        var phone =$('#phone'+id).html();
-        var address =$('#address'+id).html();
-        $("#prodform").append('<input type="hidden" value="'+id+'" name="editid" />');
-        $("input[name='name']").val(name);
-        $("input[name='phone']").val(phone);
-        $("input[name='address']").val(address);
-        $("input[name='submit']").val("Edit Customer");
-        
-      }
-      function delprod(id){
-        Swal.fire({
-  title: 'Are you sure?',
-  text: "You won't be able to revert this!",
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonColor: '#3085d6',
-  cancelButtonColor: '#d33',
-  confirmButtonText: 'Yes, delete it!'
-}).then((result) => {
-  if (result.isConfirmed) {
-            $("#delid").val(id);
-           $("#delform").submit();
-  }
-})
-      }
-      
-</script>
-<script>
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();
-});
-</script>
 <?php include 'includes/footer.php'?>
