@@ -113,6 +113,17 @@ if(isset($_POST['action']))
         }        
         echo json_encode($rows);
     }
+    if($_POST['action'] == "loadIndexStatsTop")
+    {
+        $query = "SELECT DISTINCT (Select SUM(total) FROM `sales` where type = 'S') as sales ,(SELECT SUM(total) from `sales` where type = 'P')as purchases, (Select COUNT(id) from products) as total_products, (Select COUNT(id) from customers) as total_customers,((Select SUM(total) FROM `sales` where type = 'S') -  (SELECT SUM(total) from `sales` where type = 'P')) as profit";
+        $res = mysqli_query($con,$query);
+        $rows = array();
+        while($r = mysqli_fetch_array($res))
+        {
+            $rows[] = $r;
+        }        
+        echo json_encode($rows);
+    }
     if($_POST['action'] == "loadProductStats")
     {
         $id = $_POST['id']; 
@@ -245,7 +256,7 @@ if(isset($_POST['action']))
             $query = "INSERT INTO `transactions`(`amount`, `invoiceid`, `description`, `isdebit`) 
             VALUES ($amount,$id,'Previous Amount Paid',0)";
             $ans = mysqli_query($con,$query);
-            $query = "UPDATE invoice set received = $amount, status = 1 where id = $id";
+            $query = "UPDATE invoice set received = received + $amount, status = 1 where id = $id";
             $ans = mysqli_query($con,$query);
             if($type == 'S')
             {

@@ -153,6 +153,12 @@
     
     <!-- END: Page JS-->
    <?php 
+   if($title == "Index")
+   {
+     echo '<script src="js/index.js">;';
+   }
+   ?>
+   <?php 
    if($title == "POS" || $title == "Expenses" || $title == "History" || $title == "Stock Update" || $title == "Sales History" || $title == "Product Details")
    {
      echo ' <!-- BEGIN: Page Vendor JS-->
@@ -249,9 +255,13 @@
      }
      
    }
-   else
+   else if($title == "Settings")
    {
     echo '<script src="js/settings.js"></script>';
+   }
+   else
+   {
+     echo '<script src="js/index.js"></script>';
    }
    
    ?>

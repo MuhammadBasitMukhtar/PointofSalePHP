@@ -30,7 +30,7 @@ $("document").ready(function() {
                 processData: false,
                 success: function(data) {
                     console.log(data);
-                    toastr.success("Profile Updated Successfully!", "Success!", {
+                    toastr.success("Profile Updated Successfully! Refresh page to see changes.", "Success!", {
                         closeButton: !0,
                         tapToDismiss: !1
                     })
@@ -68,7 +68,7 @@ $("document").ready(function() {
                                 processData: false,
                                 success: function(data) {
                                     console.log(data);
-                                    toastr.success("Profile Updated Successfully!", "Success!", {
+                                    toastr.success("Profile Updated Successfully! Refresh page to see changes.", "Success!", {
                                         closeButton: !0,
                                         tapToDismiss: !1
                                     })
@@ -95,7 +95,7 @@ $("document").ready(function() {
                                         processData: false,
                                         success: function(data) {
                                             console.log(data);
-                                            toastr.success("Profile Updated Successfully!", "Success!", {
+                                            toastr.success("Profile Updated Successfully! Refresh page to see changes.", "Success!", {
                                                 closeButton: !0,
                                                 tapToDismiss: !1
                                             })
@@ -156,7 +156,7 @@ $("document").ready(function() {
             processData: false,
             success: function(data) {
                 console.log(data);
-                toastr.success("Shop Info Updated Successfully!", "Success!", {
+                toastr.success("Shop Info Updated Successfully! Refresh page to see changes.", "Success!", {
                     closeButton: !0,
                     tapToDismiss: !1
                 })
